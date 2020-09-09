@@ -1,0 +1,358 @@
+body 
+{
+background-image: url('https://www.xtrafondos.com/wallpapers/montanas-minimalista-arte-low-poly-3354.jpg');
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-size: 100% 100%;
+}
+
+
+#barra{
+    width: 100%;
+    height: 80px;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0px;
+    
+}
+
+
+
+#link {
+    color: white;
+    text-decoration: none;
+    padding: 30px;
+    text-justify: auto;
+    float: right;
+}
+
+#link1{
+    color: white;
+    text-decoration: none;
+    padding: 30px;
+    text-justify: auto;
+    float: left;
+}
+
+#link1:hover{
+    background-color: rgb(1, 30, 44);
+}
+
+#link:hover{
+    background-color: rgb(1, 30, 44);
+}
+
+#texto{
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 250px;
+    font-size: 40px;
+}
+#texto a{
+    font-size: 150px;
+}
+
+#registro{
+    width: 300px;
+    height: 510px;
+    top: 100px;
+    left: 520px;
+    border-radius: 30px;
+    background-color: rgb(202, 255, 242);
+    position: absolute;
+    opacity: 90%;
+}
+
+.texto1{
+    text-align: center;
+}
+
+.imagen{
+    text-align: center;
+
+}
+
+.form-registro{
+    padding: 20px;
+    text-align: center;
+}
+
+.form-registro input{
+    margin-bottom: 15px;
+}
+
+.form-registro input[type="text"],
+.form-registro input[type="password"],
+.form-registro input[type="email"]{
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    width: 80%;
+    height: 26px;
+}
+
+
+
+.form-registro button[type="submit"]{
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    background: rgb(0, 214, 107);
+    width: 50%;
+    height: 30px;
+}
+
+#inicio{
+    width: 300px;
+    height: 410px;
+    top: 100px;
+    left: 520px;
+    border-radius: 30px;
+    background-color: rgb(202, 255, 242);
+    position: absolute;
+    opacity: 90%;
+}
+
+.form-inicio{
+    padding: 20px;
+    text-align: center;
+}
+
+.form-inicio input{
+    margin-bottom: 20px;
+}
+
+.form-inicio input[type="text"],
+.form-inicio input[type="password"]{
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    width: 80%;
+    height: 26px;
+}
+
+.form-inicio button{
+    margin-top: 30px;
+}
+
+.form-inicio button[type="submit"]{
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    background: rgb(0, 214, 107);
+    width: 50%;
+    height: 30px;
+}
+
+/* Inicio Principal  */
+
+#link2{
+    color: white;
+    text-decoration: none;
+    padding: 30px;
+    text-justify: auto;
+    float: right;
+}
+
+#link2:hover{
+    background-color: rgb(1, 30, 44);
+}
+
+.navegacion{
+    padding: 30px;
+    text-align: center;
+}
+
+.navegacion input[type="search"]{
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    height: 30px;
+    width: 35%;
+    position: relative;
+    left: 60px;
+}
+
+.campo{
+    padding: 50px;
+}
+
+.content-table{
+    table-layout: fixed;
+    width: 80%; 
+    word-wrap:break-word; 
+
+}
+
+
+.content-table{
+    border-collapse: collapse;
+    margin: 65px 120px;
+    font-size: 0.9em ;
+    min-width: 400px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 10px #b5fffb;
+    position: inherit;
+    
+}
+
+.content-table thead tr{
+    background-color: rgb(0, 173, 173);
+    color: rgb(255, 255, 255);
+    text-align: left;
+    font-weight: bold;
+    
+}
+
+.content-table th,
+.content-table td{
+    padding: 12px 25px;
+    
+}
+
+.content-table td{
+    background: white;
+    font-size: 15px;
+}
+
+.content-table tbody tr{
+    border-bottom: 1px solid rgb(0, 0, 0);
+}
+
+.content-table tbody tr:nth-of-type(even){
+    background-color: rgb(90, 90, 90);
+}
+
+.content-table tbody tr:last-of-type{
+    border-bottom: 2px solid darkcyan;
+}
+
+
+
+#btn-mas{
+    display: none;
+}
+
+.container{
+    position: fixed;
+    bottom: 20px;
+    right: -990px;
+
+}
+
+.opciones a, .icon-mas{
+    display: block;
+    text-decoration: none;
+    background: #1b1313;
+    color: antiquewhite;
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0px 1px 10px rgb(0, 0, 0,0.4);
+    transition: all 500ms ease;
+}
+
+.opciones a:hover{
+    background: #fff;
+    color: #000000
+}
+
+.opciones a{
+    margin-bottom: -15px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#btn-mas:checked~ .opciones a{
+    margin-bottom: 10px;
+    opacity: 1;
+    visibility: visible;
+}
+
+#icon-mas{
+    cursor: pointer;
+    background: #f44141;
+    font-size: 23px;
+}
+
+#btn-mas:checked ~ .btn-mas .icon-mas{
+    transform: rotate(137deg);
+    font-size: 25px;
+}
+
+.todo {
+    background: #59d0ff; 
+    position: absolute; width: 800px; 
+    height: 450px; 
+    top: 100px; 
+    left: 260px; 
+    padding: 20px 30px; 
+    font-size: 20px;
+    border-radius: 15px;
+    opacity: 90%;
+}
+
+.todo input {
+    font-size: 18px;
+}
+
+.todo span{
+    color: red;
+}
+
+.cajatexto1 {
+    float: right; 
+    width: 500px; 
+    height: 20px; 
+    margin: -49px 210px;
+}
+
+.cajatexto2 {
+    float: right; 
+    margin: -26px 535px;
+}
+
+.cajatexto3 {
+    float: right; 
+    margin: -23px 210px;
+}
+
+.cajatexto4 {
+    margin: 15px 25px; 
+    width: 730px; 
+    height: 150px;
+    font-size: 16px;
+}
+
+#titulo2 {
+    margin: 40px 0px 0px 0px ;
+}
+
+#titulo3 {
+    float: right;
+    margin: -23px 390px;
+}
+
+#titulo4 {
+    margin: 40px 0px 0px 0px;
+}
+
+.todo button {
+    float: right;
+    background-color: rgb(129, 205, 255);
+    color: #0400ff;
+    margin: 50px 0px 0px 0px; 
+    width: 130px;
+    height: 40px;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.todo button:hover {
+    color: rgb(129, 205, 255);
+    background: #0400ff;
+}
