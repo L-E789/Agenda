@@ -90,6 +90,13 @@ background-size: 100% 100%;
 
 }
 
+.mensaje{
+    position: absolute;
+    top: 80px;
+    left: 1125px;
+    width: 240px;
+    height: 50px;
+}
 .form-registro{
     padding: 20px;
     text-align: center;
