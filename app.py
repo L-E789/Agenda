@@ -28,12 +28,12 @@ def crear_registro():
         nombre = request.form['nombre'] 
         email = request.form['email'] 
         usuario = request.form['usuario'] 
-        contrasena = generate_password_hash(request.form['contrasena'], method="sha256") 
+        contrasena = request.form['contrasena']
         validar = request.form['validar']
         if contrasena == validar:
             cur = mysql.connection.cursor()
             try:
-                cur.execute("INSERT INTO usuario (nombre,email,usuario,contrasena) VALUES (%s,%s,%s,%s)",(nombre,email,usuario,contrasena))
+                cur.execute("INSERT INTO usuario (nombre,email,usuario,contrasena) VALUES (%s,%s,%s,%s)",(nombre,email,usuario,generate_password_hash(contrasena, method="sha256")))
                 mysql.connection.commit()
                 flash("Sus datos fueron registrados exitosamente", "exito")
                 return redirect(url_for("registro"))
