@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
     <title>Registro</title>
 </head>
@@ -12,6 +13,41 @@
 <a href="/" id="link1" >volver</a>
 </div>
 
+<div class="mensaje">
+        {% with messages = get_flashed_messages(category_filter=["exito"]) %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-success mb-3" role="alert">
+                    <i class="close icon" onclick=delete_flash(this)>X</i>
+                    {{ message }}     
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% with messages = get_flashed_messages(category_filter=["info"]) %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning mb-3" role="alert">
+                    <i class="close icon" onclick=delete_flash(this)>X</i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% with messages = get_flashed_messages(category_filter=["error"]) %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-danger mb-3" role="alert">
+                    <i class="close icon" onclick=delete_flash(this)>X</i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+</div>
+
 <div id="registro">
     <div class="texto1">
         <h1>SIGN IN</h1>
@@ -19,14 +55,15 @@
     <div class="imagen">
     <img src="{{ url_for('static', filename='imagen/imagen.png') }}" width="100" height="100">
     </div>
-    <form class="form-registro">
-        <input type="text" name="nombre" placeholder="Nombre completo" required>
-        <input type="email" name="email" placeholder="Ingrese email" required>
-        <input type="text" name="usuario" placeholder="Ingrese usuario" required>
-        <input type="password" name="contraseña" placeholder="Ingrese contraseña" required>
-        <input type="password" name="validar" placeholder="Ingrese de nuevo la contraseña" required>
+    
+    <form action="/crear_registro" class="form-registro" method="POST" >
+        <input type="text" name="nombre" placeholder="Nombre completo" autocomplete="off" required onkeypress="return soloLetras(event)">
+        <input type="email" name="email" placeholder="Ingrese email" autocomplete="off" required>
+        <input type="text" name="usuario" placeholder="Ingrese usuario" autocomplete="off" required>
+        <input type="password" name="contrasena" placeholder="Ingrese contraseña" minlength="8" required>
+        <input type="password" name="validar" placeholder="Ingrese de nuevo la contraseña" minlength="8" required>
         <br>
-        <input type="checkbox" name="verificar" required> Acepto terminos y condiciones
+        <input type="checkbox" name="verificar" required> Acepto <a href="/terminos_y_condiciones" target="_blank">terminos y condiciones</a>
         <br>
         <br>
         <button type="submit">REGISTRARME</button>
@@ -36,5 +73,30 @@
 </div>
 
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    function delete_flash(flash){
+        $(flash).parent().remove()
+    }
+
+    function soloLetras(e) {
+    var key = e.keyCode || e.which,
+      tecla = String.fromCharCode(key).toLowerCase(),
+      letras = " áéíóúabcdefghijklmnñopqrstuvwxyz",
+      especiales = [8, 37, 39, 46],
+      tecla_especial = false;
+
+    for (var i in especiales) {
+      if (key == especiales[i]) {
+        tecla_especial = true;
+        break;
+      }
+    }
+
+    if (letras.indexOf(tecla) == -1 && !tecla_especial) {
+      return false;
+    }
+  }
+</script>
 </body>
 </html>
