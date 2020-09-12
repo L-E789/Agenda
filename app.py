@@ -9,6 +9,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'db_agend'
 mysql = MySQL(app)
+usuario1 = 0
 
 @app.route('/')
 def index():
@@ -49,11 +50,52 @@ def crear_registro():
 
 @app.route('/login')
 def login():
-    return render_template("login.html" )
+    return render_template("login.html")
+
+@app.route('/login_datos', methods=['POST'])
+def login_datos():
+    global usuario1
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        contrasena = request.form['contrasena']
+        cur = mysql.connection.cursor()
+        try:
+            cur.execute("SELECT * FROM usuario WHERE usuario = %s", (usuario,))
+            datos = cur.fetchall()
+            for i in datos:
+                iid = i[0]
+                contra = i[4]
+                if datos and check_password_hash(contra, contrasena):
+                    usuario1 = iid
+                    return redirect(url_for("principal"))
+                else:
+                    flash("El usuario o contraseña son incorrectos", "error")
+                    return redirect(url_for("login"))
+            else:
+                flash("El usuario o contraseña son incorrectos", "error")
+                return redirect(url_for("login"))
+        except:
+            flash("El usuario o contraseña son incorrectos", "error")
+            return redirect(url_for("login"))
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/principal')
 def principal():
-    return render_template("principal.html" )
+    if usuario1 > 0:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM evento WHERE id_usuario = %s", (usuario1,))
+        eventos = cur.fetchall()
+        return render_template("principal.html", eventos=eventos)
+    else:
+        return redirect(url_for("login"))
+
+@app.route('/salir')
+def salir():
+    global usuario1
+    usuario1 = 0
+    return redirect(url_for("index"))
+    
 
 @app.route('/evento')
 def evento():
