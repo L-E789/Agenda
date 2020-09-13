@@ -36,6 +36,7 @@ def crear_registro():
             try:
                 cur.execute("INSERT INTO usuario (nombre,email,usuario,contrasena) VALUES (%s,%s,%s,%s)",(nombre,email,usuario,generate_password_hash(contrasena, method="sha256")))
                 mysql.connection.commit()
+                cur.close()
                 flash("Sus datos fueron registrados exitosamente", "exito")
                 return redirect(url_for("registro"))
             except:
@@ -62,6 +63,7 @@ def login_datos():
         try:
             cur.execute("SELECT * FROM usuario WHERE usuario = %s", (usuario,))
             datos = cur.fetchall()
+            cur.close()
             for i in datos:
                 iid = i[0]
                 contra = i[4]
@@ -84,8 +86,9 @@ def login_datos():
 def principal():
     if usuario1 > 0:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM evento WHERE id_usuario = %s", (usuario1,))
+        cur.execute("SELECT * FROM evento WHERE id_usuario = %s ORDER BY id DESC",(usuario1,))
         eventos = cur.fetchall()
+        cur.close()
         return render_template("principal.html", eventos=eventos)
     else:
         return redirect(url_for("login"))
@@ -101,6 +104,20 @@ def salir():
 def evento():
     return render_template("evento.html" )
 
+@app.route("/busqueda", methods=["POST"])
+def busqueda():
+    if request.method == "POST":
+        if usuario1 > 0:
+            busqueda = "%" + request.form["busqueda"] + "%"
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM evento WHERE descripcion LIKE %s and id_usuario = %s ORDER BY id DESC",(busqueda,usuario1,))
+            eventos = cur.fetchall()
+            cur.close()
+            return render_template("principal.html", eventos=eventos)
+        else:
+            return redirect(url_for("index"))
+    else:
+        return redirect(url_for("index"))
 
 if __name__ == '__main__':
     app.run(debug=True)
