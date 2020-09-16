@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Eventos</title>
+</head>
+<body>
+
+<div id="barra1">
+<a href="/principal" id="link1" >volver</a>
+</div>
+<div class="todo">
+    <form action="/editar_evento/{{ evento.0 }}" method="POST">
+        <h3>Titulo</h3>
+        <input class="cajatexto1" type="text" name="titulo" value="{{ evento.2 }}" placeholder="Escribe aquí el titulo" required autocomplete="off">
+        <h3 id="titulo2">Fecha</h3>
+        <input class="cajatexto2" type="date" name="fecha" value="{{ evento.4 }}" required>
+        <h3 id="titulo3">Hora</h3>
+        <input class="cajatexto3" type="time" name="hora" value="{{ evento.5 }}" required>
+        <h3 id="titulo4" >Descripción</h3>
+        <textarea class="cajatexto4" name="descripcion" rows="10" cols="40"  placeholder="Escribe aquí tus comentarios">{{ evento.3}}</textarea>
+        <button  type="submit">Guardar evento</button>
+    </form>
+</div>
+
+</body>
+</html>

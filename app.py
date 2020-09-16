@@ -93,6 +93,35 @@ def principal():
     else:
         return redirect(url_for("login"))
 
+@app.route("/borrar/<id>")
+def borrar(id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM evento WHERE id=%s",(id,))
+    mysql.connection.commit()
+    cur.close()
+    flash("El evento fue borrado exitosamente", "exito")
+    return redirect(url_for('principal'))
+
+@app.route("/editar/<id>")
+def editar(id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM evento WHERE id=%s",(id,))
+    evento = cur.fetchall()
+    cur.close()
+    return render_template("editar.html", evento=evento[0])
+
+@app.route("/editar_evento/<id>", methods=["POST"])
+def editar_evento(id):
+    titulo = request.form["titulo"]
+    fecha = request.form["fecha"]
+    descripcion = request.form["descripcion"]
+    hora = request.form["hora"]
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE evento SET titulo = %s, descripcion = %s, fecha = %s, hora = %s WHERE id = %s ",(titulo,descripcion,fecha,hora,id))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for("principal"))
+
 @app.route('/salir')
 def salir():
     global usuario1
