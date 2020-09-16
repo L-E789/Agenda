@@ -99,10 +99,27 @@ def salir():
     usuario1 = 0
     return redirect(url_for("index"))
     
-
 @app.route('/evento')
 def evento():
-    return render_template("evento.html" )
+    if usuario1 > 0:
+        return render_template("evento.html")
+    else:
+        return redirect(url_for("login"))
+
+      
+@app.route('/crear_evento', methods=["POST"])
+def crear_evento():
+    if request.method == 'POST':
+        titulo = request.form['titulo'] 
+        fecha = request.form['fecha'] 
+        descripcion = request.form['descripcion'] 
+        hora = request.form['hora'] 
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO evento (id_usuario,titulo,fecha,descripcion,hora) VALUES (%s,%s,%s,%s,%s)",(usuario1,titulo,fecha,descripcion,hora))
+        mysql.connection.commit()
+        cur.close()
+        flash("El evento fue registrado exitosamente", "exito")
+        return redirect(url_for("principal"))
 
 @app.route("/busqueda", methods=["POST"])
 def busqueda():
