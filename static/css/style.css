@@ -17,6 +17,16 @@ background-size: 100% 100%;
     
 }
 
+#barra1{
+    width: 100%;
+    height: 80px;
+    background-color: rgb(0, 49, 58);
+    position: fixed;
+    opacity: 80%;
+    top: 0;
+    left: 0px;
+    
+}
 
 #link {
     color: white;
@@ -31,6 +41,16 @@ background-size: 100% 100%;
     text-decoration: none;
     padding: 30px;
     text-justify: auto;
+    float: left;
+}
+
+#link3{
+    color: white;
+    text-decoration: none;
+    padding: 20px 50px;
+    font-size: 30px;
+    text-justify: auto;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     float: left;
 }
 
@@ -185,7 +205,6 @@ background-size: 100% 100%;
 
 .navegacion{
     padding: 30px;
-    text-align: center;
 }
 
 .navegacion input[type="search"]{
@@ -193,9 +212,9 @@ background-size: 100% 100%;
     outline: none;
     border-radius: 20px;
     height: 30px;
-    width: 35%;
-    position: relative;
-    left: 60px;
+    width: 25%;
+    position: relative; 
+    left: 240px;
 }
 
 .campo{
@@ -204,7 +223,7 @@ background-size: 100% 100%;
 
 .content-table{
     table-layout: fixed;
-    width: 80%; 
+    width: 100%; 
     word-wrap:break-word; 
 
 }
@@ -212,8 +231,8 @@ background-size: 100% 100%;
 
 .content-table{
     border-collapse: collapse;
-    margin: 65px 120px;
-    font-size: 0.9em ;
+    margin: 65px 10px;
+    font-size: 10px ;
     min-width: 400px;
     border-radius: 5px 5px 0 0;
     overflow: hidden;
@@ -238,6 +257,7 @@ background-size: 100% 100%;
 
 .content-table td{
     background: white;
+    color: black;
     font-size: 15px;
 }
 
@@ -309,11 +329,12 @@ background-size: 100% 100%;
 }
 
 .todo {
-    background: #59d0ff; 
-    position: absolute; width: 800px; 
-    height: 450px; 
+    background: #122831; 
+    position: absolute; 
+    width: 640px; 
+    height: auto; 
     top: 100px; 
-    left: 260px; 
+    left: 330px; 
     padding: 20px 30px; 
     font-size: 20px;
     border-radius: 15px;
@@ -324,32 +345,50 @@ background-size: 100% 100%;
     font-size: 18px;
 }
 
-.todo span{
-    color: red;
+.todo h3{
+    color: blanchedalmond;
 }
 
+
 .cajatexto1 {
-    float: right; 
     width: 500px; 
     height: 20px; 
-    margin: -49px 210px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    position: relative;
+    left: 70px;
+    top: -50px;
 }
 
 .cajatexto2 {
-    float: right; 
-    margin: -26px 535px;
+    
+    top: -30px;
+    left: 70px;
+    position: relative;
+    border: none;
+    outline: none;
+    border-radius: 20px;
 }
 
 .cajatexto3 {
-    float: right; 
-    margin: -23px 210px;
+    top: 155px;
+    left: 420px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    position: absolute;
 }
 
 .cajatexto4 {
     margin: 15px 25px; 
-    width: 730px; 
+    width: 580px; 
+    border-radius: 10px;
     height: 150px;
+    border: none;
+    outline: none;
     font-size: 16px;
+    resize: none;
 }
 
 #titulo2 {
@@ -357,19 +396,20 @@ background-size: 100% 100%;
 }
 
 #titulo3 {
-    float: right;
-    margin: -23px 390px;
+    position: relative;
+    top: -75px;
+    left: 320px;
 }
 
 #titulo4 {
-    margin: 40px 0px 0px 0px;
+    position: absolute;
+    top: 220px;
 }
 
 .todo button {
     float: right;
     background-color: rgb(129, 205, 255);
-    color: #0400ff;
-    margin: 50px 0px 0px 0px; 
+    color: #000000;
     width: 130px;
     height: 40px;
     font-weight: bold;
@@ -377,6 +417,5 @@ background-size: 100% 100%;
 }
 
 .todo button:hover {
-    color: rgb(129, 205, 255);
-    background: #0400ff;
+    background: #08ffc1;
 }

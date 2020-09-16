@@ -10,11 +10,15 @@
 </head>
 <body>
 
-<div id="barra">
-<a href="#" id="link2" >Salir</a>
-<a href="#" id="link2" >Crear</a>
+<div id="barra1">
+<a href="/principal" id="link3" >CODEGROUP</a>
+<a href="/salir" id="link2" >Salir</a>
+<a href="#" id="link2">Busqueda Avanzada</a>
+<a href="/evento" id="link2" >Crear</a>
 <div class="navegacion">
-<input type="search" placeholder="Buscar">
+    <form action="/busqueda" method="POST">
+        <input type="search" name="busqueda" placeholder="Buscar" autocomplete="off">
+    </form>
 </div>
 </div>
 
@@ -31,16 +35,15 @@
             </tr>
         </thead>
         <tbody>
+            {% for i in eventos %}
             <tr>
-                <td><input type="checkbox"></td>
-                <td>Abogados</td>
-                <td>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis illum consequuntur, 
-                    earum omnis sunt accusamus fuga perspiciatis nihil, recusandae tempora amet quos nostrum ad 
-                    corrupti. Explicabo, vel dolorum! Tempora, odit.</td>
-                <td>2020/02/12</td>
-                <td>00:10am</td>
+                <td><input type="checkbox" value="{{ i[0] }}"></td>
+                <td>{{ i[2] }}</td>
+                <td>{{ i[3] }}</td>
+                <td>{{ i[4] }}</td>
+                <td>{{ i[5] }}</td>
             </tr>
-            
+            {% endfor %}
         </tbody>
     </table>
 </div>
