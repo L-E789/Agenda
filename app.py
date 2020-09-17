@@ -93,16 +93,62 @@ def principal():
     else:
         return redirect(url_for("login"))
 
+@app.route("/borrar/<id>")
+def borrar(id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM evento WHERE id=%s",(id,))
+    mysql.connection.commit()
+    cur.close()
+    flash("El evento fue borrado exitosamente", "exito")
+    return redirect(url_for('principal'))
+
+@app.route("/editar/<id>")
+def editar(id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM evento WHERE id=%s",(id,))
+    evento = cur.fetchall()
+    cur.close()
+    return render_template("editar.html", evento=evento[0])
+
+@app.route("/editar_evento/<id>", methods=["POST"])
+def editar_evento(id):
+    titulo = request.form["titulo"]
+    fecha = request.form["fecha"]
+    descripcion = request.form["descripcion"]
+    hora = request.form["hora"]
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE evento SET titulo = %s, descripcion = %s, fecha = %s, hora = %s WHERE id = %s ",(titulo,descripcion,fecha,hora,id))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for("principal"))
+
 @app.route('/salir')
 def salir():
     global usuario1
     usuario1 = 0
     return redirect(url_for("index"))
     
-
 @app.route('/evento')
 def evento():
-    return render_template("evento.html" )
+    if usuario1 > 0:
+        return render_template("evento.html")
+    else:
+        return redirect(url_for("login"))
+
+      
+@app.route('/crear_evento', methods=["POST"])
+def crear_evento():
+    if request.method == 'POST':
+        titulo = request.form['titulo'] 
+        fecha = request.form['fecha'] 
+        descripcion = request.form['descripcion'] 
+        hora = request.form['hora'] 
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO evento (id_usuario,titulo,fecha,descripcion,hora) VALUES (%s,%s,%s,%s,%s)",(usuario1,titulo,fecha,descripcion,hora))
+        mysql.connection.commit()
+        cur.close()
+        flash("El evento fue registrado exitosamente", "exito")
+        return redirect(url_for("principal"))
 
 @app.route("/busqueda", methods=["POST"])
 def busqueda():

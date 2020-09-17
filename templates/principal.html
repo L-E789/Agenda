@@ -22,6 +22,20 @@
 </div>
 </div>
 
+<div class="mensaje">
+    {% with messages = get_flashed_messages(category_filter=["exito"]) %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success mb-3" role="alert">
+                <i class="close icon" onclick=delete_flash(this)>X</i>
+                {{ message }}     
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+</div>
+
 
 <div class="campo">
     <table  class="content-table" >
@@ -37,7 +51,7 @@
         <tbody>
             {% for i in eventos %}
             <tr>
-                <td><input type="checkbox" value="{{ i[0] }}"></td>
+                <td><input type="checkbox" onclick="num(value='{{ i[0] }}')"></td>
                 <td>{{ i[2] }}</td>
                 <td>{{ i[3] }}</td>
                 <td>{{ i[4] }}</td>
@@ -51,13 +65,47 @@
 <div class="container">
     <input type="checkbox" id="btn-mas">
     <div class="opciones">
-        <a href="#" class="icon-eliminar"></a>
-        <a href="#" class="icon-editar"></a>
+        <a  onclick="borrar(this)" class="icon-eliminar"></a>
+        <a onclick="editar(this)" class="icon-editar"></a>
     </div>
     <div class="btn-mas">
         <label for="btn-mas" class="icon-mas"></label>
     </div>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+
+    function delete_flash(flash){
+            $(flash).parent().remove()
+    }
+
+    function abrir(){
+        document.getElementById("vent").style.display="block";
+    }
+
+    function cerrar(){
+        document.getElementById("vent").style.display="none";
+    }
+
+    function num(id){
+        numero = id
+        return numero
+    }
+
+    function borrar(a){
+        var r = confirm("Seguro que desea borrar!");
+        if (r == true) {
+            a.setAttribute('href','/borrar/'+ numero)
+        } else {
+            return a.setAttribute('href','/principal')
+        }
+    }
+
+    function editar(a){
+        a.setAttribute('href','/editar/'+ numero)
+    }
+
+</script>
 </body>
 </html>
