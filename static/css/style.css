@@ -39,19 +39,17 @@ background-size: 100% 100%;
 #link1{
     color: white;
     text-decoration: none;
-    padding: 30px;
+    
     text-justify: auto;
-    float: left;
+    float: right;
 }
 
 #link3{
-    color: white;
-    text-decoration: none;
-    padding: 20px 50px;
-    font-size: 30px;
-    text-justify: auto;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    float: left;
+    float:left;
+}
+#link4{
+    top: 3px;
+    left: 450px;
 }
 
 #link1:hover{
