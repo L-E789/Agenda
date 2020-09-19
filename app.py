@@ -165,5 +165,204 @@ def busqueda():
     else:
         return redirect(url_for("index"))
 
-if __name__ == '__main__':
+@app.route("/busqueda_avanzada", methods=["POST"])
+def busqueda_avanzada():
+    if request.method == "POST":
+        ba_titulo = request.form["ba_titulo"]
+        ba_fecha = request.form["ba_fecha"] 
+        ba_hora = request.form["ba_hora"]
+        ba_fecha2 = request.form["ba_fecha2"]
+        ba_fecha3 = request.form["ba_fecha3"]
+        ba_hora2 = request.form["ba_hora2"]
+        ba_hora3 = request.form["ba_hora3"]
+        if ba_titulo != "":
+            if ba_fecha != "": 
+                if ba_fecha2 != "" or ba_fecha3 != "":
+                    flash("Escoja si desea ver por una fecha exacta o por filtros pero no ambas", "info")
+                    return redirect(url_for("principal"))
+                elif ba_hora != "":
+                    if ba_hora2 != "" or ba_hora3 != "":
+                        flash("Escoja si desea ver por una hora exacta o por filtros pero no ambas", "info")
+                        return redirect(url_for("principal"))
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s and hora LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha,"%" + ba_hora + "%",))
+                        eventos = cur.fetchall()
+                        cur.close()
+                        return render_template("principal.html", eventos=eventos)
+                elif ba_hora2 != "":
+                    if ba_hora3 != "":
+                        cur = mysql.connection.cursor()
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha,ba_hora2,ba_hora3,))
+                        eventos = cur.fetchall()
+                        cur.close()
+                        return render_template("principal.html", eventos=eventos) 
+                    else:
+                        flash("Si desea hacer un filtro de la hora porfavor llene ambos campos", "info")
+                        return redirect(url_for("principal"))
+                elif ba_hora3 != "":
+                    flash("Si desea hacer un filtro de la hora porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+                else:
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha,))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos)
+            elif ba_hora != "": #ya
+                if ba_hora2 != "" or ba_hora3 != "":
+                    flash("Escoja si desea ver por una hora exacta o por filtros pero no ambas", "info")
+                    return redirect(url_for("principal"))
+                elif ba_fecha2 != "":
+                    if ba_fecha3 != "":
+                        cur = mysql.connection.cursor()
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and hora LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%","%" + ba_hora + "%",ba_fecha2,ba_fecha3,))
+                        eventos = cur.fetchall()
+                        cur.close()
+                        return render_template("principal.html", eventos=eventos) 
+                    else:
+                        flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                        return redirect(url_for("principal"))
+                elif ba_fecha3 !="":
+                    flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+                else:
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and hora LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%","%" + ba_hora + "%",))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos)
+            elif ba_fecha2 != "":
+                if ba_fecha3 != "":
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha2,ba_fecha3,))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos) 
+                else:
+                    flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+            elif ba_fecha3 != "":
+                flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                return redirect(url_for("principal"))
+            elif ba_hora2 != "":
+                if ba_hora3 != "":
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_hora2,ba_hora3,))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos) 
+                else:
+                    flash("Si desea hacer un filtro de la hora porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+            elif ba_hora3 != "":
+                flash("Si desea hacer un filtro de la hora porfavor llene ambos campos", "info")
+                return redirect(url_for("principal"))
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",))
+                eventos = cur.fetchall()
+                cur.close()
+                return render_template("principal.html", eventos=eventos)
+        elif ba_fecha != "": #ya terminado
+            if ba_fecha2 != "" or ba_fecha3 != "":
+                flash("Escoja si desea ver por una fecha exacta o por filtros pero no ambas", "info")
+                return redirect(url_for("principal"))
+            elif ba_hora != "": 
+                if ba_hora2 != "" or ba_hora3 != "":
+                    flash("Escoja si desea ver por una hora exacta o por filtros pero no ambas", "info")
+                    return redirect(url_for("principal"))
+                else:
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s and hora LIKE %s ORDER BY id ASC",(usuario1,ba_fecha,"%" + ba_hora + "%",))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos) 
+            elif ba_hora2 != "":
+                if ba_hora3 != "":
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,ba_fecha,ba_hora2,ba_hora3,))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos)  
+                else:
+                    flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+            elif ba_hora3 != "":
+                flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                return redirect(url_for("principal"))
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s ORDER BY id ASC",(usuario1,ba_fecha,))
+                eventos = cur.fetchall()
+                cur.close()
+                return render_template("principal.html", eventos=eventos)
+        elif ba_hora != "": 
+            if ba_hora2 != "" or ba_hora3 != "":
+                flash("Escoja si desea ver por una hora exacta o por filtros pero no ambas", "info")
+                return redirect(url_for("principal"))
+            elif ba_fecha2 != "":
+                if ba_fecha3 != "":
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and hora LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,"%" + ba_hora + "%",ba_fecha2,ba_fecha3,))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos) 
+                else:
+                    flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+            elif ba_fecha3 != "":
+                flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                return redirect(url_for("principal"))
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and hora LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_hora + "%",))
+                eventos = cur.fetchall()
+                cur.close()
+                return render_template("principal.html", eventos=eventos)
+        elif ba_fecha2 != "":
+            if ba_fecha3 != "":
+                if ba_hora2 != "":
+                    if ba_hora3 != "":
+                        cur = mysql.connection.cursor()
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,ba_fecha2,ba_fecha3,ba_hora2,ba_hora3,))
+                        eventos = cur.fetchall()
+                        cur.close()
+                        return render_template("principal.html", eventos=eventos) 
+                    else:
+                        flash("Si desea hacer un filtro de la fecha con la hora porfavor llene ambos campos", "info")
+                        return redirect(url_for("principal"))
+                elif ba_hora3 != "":
+                    flash("Si desea hacer un filtro de la fecha con la hora porfavor llene ambos campos", "info")
+                    return redirect(url_for("principal"))
+                else:
+                    cur = mysql.connection.cursor()
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,ba_fecha2,ba_fecha3,))
+                    eventos = cur.fetchall()
+                    cur.close()
+                    return render_template("principal.html", eventos=eventos) 
+            else:
+                flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+                return redirect(url_for("principal"))
+        elif ba_fecha3 != "":
+            flash("Si desea hacer un filtro de la fecha porfavor llene ambos campos", "info")
+            return redirect(url_for("principal"))
+        elif ba_hora2 != "":
+            if ba_hora3 != "":
+                cur = mysql.connection.cursor()
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,ba_hora2,ba_hora3,))
+                eventos = cur.fetchall()
+                cur.close()
+                return render_template("principal.html", eventos=eventos) 
+            else:
+                flash("Si desea hacer un filtro de la hora porfavor llene ambos campos", "info")
+                return redirect(url_for("principal"))
+        elif ba_hora3 != "":
+            flash("Si desea hacer un filtro de la hora porfavor llene ambos campos", "info")
+            return redirect(url_for("principal"))
+        elif ba_titulo == "" and ba_hora == "" and ba_fecha == "":
+            flash("Usted no ingresó ningun dato a buscar por favor llene almenos 1 de los campos", "info")
+            return redirect(url_for("principal"))
+
+if __name__ == '__main__': 
     app.run(debug=True)
