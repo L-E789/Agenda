@@ -46,6 +46,7 @@ background-size: 100% 100%;
 
 #link3{
     float:left;
+    padding: 15px;
 }
 #link4{
     top: 3px;
@@ -81,8 +82,8 @@ background-size: 100% 100%;
     top: 40px;
     left: 450px;
     padding: 50px 60px;
-    border-radius: 30px;
     position: absolute;
+    border-radius: 30px;
     background-color: rgb(202, 255, 242);
     opacity: 90%;
     text-align: justify;
@@ -416,4 +417,175 @@ background-size: 100% 100%;
 
 .todo button:hover {
     background: #08ffc1;
+}
+
+.ventana{
+    background-image: url('/static/imagen/fondon_1.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;  
+    background-size: 100% 100%;
+    width: 62%;
+    height: 75%;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    padding: 33px;
+    position: fixed;
+    left: 240px;
+    top: 100px;
+    display: none;
+}
+#cerrar img{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 826px;
+    top: 1px;
+}
+
+#cerrar img:hover{
+    background-color: red;
+}
+
+/* Este es todo el css de la barra de busqueda*/
+
+.busqueda_a button {
+    float: right;
+    position: absolute;
+    top: 451px;
+    left: 746px;
+    margin-right: 10px;
+    padding: 5px 20px;
+}
+
+.busqueda_a button:hover {
+    background-color: rgb(75, 119, 241);
+}
+
+.busqueda_a input {
+    border: none;
+    outline: none;
+}
+
+.busqueda_a #titulo_grande3 {
+    position: absolute;
+    top: 240px;
+    left: 384px;
+    color: #c2edf5;
+}
+.busqueda_a #titulo_grande4 {
+    position: absolute;
+    top: 345px;
+    left: 384px;
+    color: #c2edf5;
+}
+
+.busqueda_a #titulo_grande1 {
+    text-align: left;
+    color: #6cfae7;
+    margin: 10px 0px 40px 0px;
+    font-family: 'Abril Fatface', cursive;
+}
+
+.busqueda_a #titulo_grande2 {
+    color: #6cfae7;
+    position: absolute;
+    top: 200px;
+    left: 40px;
+    font-family: 'Abril Fatface', cursive;
+}
+
+.busqueda_a #titulo11 {
+    position: absolute;
+    top: 100px;
+    left: 90px;
+    color: #c2edf5;
+}
+
+.busqueda_a #titulo12 {
+    color: #c2edf5;
+    position: absolute;
+    top: 100px;
+    left: 410px;
+}
+
+.busqueda_a #titulo13 {
+    color: #c2edf5;
+    position: absolute;
+    top: 100px;
+    left: 690px;
+}
+
+.busqueda_a .ba_titulo {
+    position: absolute;
+    top: 140px;
+    left: 40px;
+}
+
+.busqueda_a .ba_fecha {
+    position: absolute;
+    top: 140px;
+    left: 372px;
+}
+
+.busqueda_a .ba_hora {
+    position: absolute;
+    top: 140px; 
+    left: 670px;
+}
+
+.busqueda_a .ba_fecha2 {
+    position: absolute;
+    top: 293px;
+    left: 200px;
+    padding: 0px;
+}
+
+.busqueda_a .ba_fecha3 {
+    position: absolute;
+    top: 293px;
+    left: 520px;
+    padding: 0px;
+}
+
+.busqueda_a .ba_hora2 {
+    position: absolute;
+    top: 397px;
+    left: 200px;
+    padding: 0px;
+}
+
+.busqueda_a .ba_hora3 {
+    position: absolute;
+    top: 397px;
+    left: 520px;
+    padding: 0px;
+}
+
+.busqueda_a #A_A1 {
+    position: absolute;
+    top: 295px;
+    left: 440px;
+    color: #c2edf5;
+}
+
+.busqueda_a #A_A2 {
+    position: absolute;
+    top: 400px;
+    left: 440px;
+    color: #c2edf5;
+}
+
+.busqueda_a #D_D1 {
+    position: absolute;
+    top: 295px;
+    left: 110px;
+    color: #c2edf5;
+}
+
+.busqueda_a #D_D2 {
+    position: absolute;
+    top: 400px;
+    left: 110px;
+    color: #c2edf5;
 }
