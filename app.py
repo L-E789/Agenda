@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 
@@ -9,7 +9,6 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'db_agend'
 mysql = MySQL(app)
-usuario1 = 0
 
 @app.route('/')
 def index():
@@ -36,6 +35,7 @@ def crear_registro():
             try:
                 cur.execute("INSERT INTO usuario (nombre,email,usuario,contrasena) VALUES (%s,%s,%s,%s)",(nombre,email,usuario,generate_password_hash(contrasena, method="sha256")))
                 mysql.connection.commit()
+                session['usuario'] = usuario
                 cur.close()
                 flash("Sus datos fueron registrados exitosamente", "exito")
                 return redirect(url_for("registro"))
@@ -55,7 +55,6 @@ def login():
 
 @app.route('/login_datos', methods=['POST'])
 def login_datos():
-    global usuario1
     if request.method == 'POST':
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
@@ -68,7 +67,9 @@ def login_datos():
                 iid = i[0]
                 contra = i[4]
                 if datos and check_password_hash(contra, contrasena):
-                    usuario1 = iid
+                    session['usuario'] = usuario
+                    session['id'] = iid
+                    session['logged_in'] = True
                     return redirect(url_for("principal"))
                 else:
                     flash("El usuario o contraseña son incorrectos", "error")
@@ -84,14 +85,15 @@ def login_datos():
 
 @app.route('/principal')
 def principal():
-    if usuario1 > 0:
+    if session.get('logged_in') == True:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM evento WHERE id_usuario = %s ORDER BY id DESC",(usuario1,))
+        cur.execute("SELECT * FROM evento WHERE id_usuario = %s ORDER BY id DESC",(session['id'],))
         eventos = cur.fetchall()
         cur.close()
         return render_template("principal.html", eventos=eventos)
     else:
-        return redirect(url_for("login"))
+        return redirect(url_for('login'))
+
 
 @app.route("/borrar/<id>")
 def borrar(id):
@@ -124,13 +126,12 @@ def editar_evento(id):
 
 @app.route('/salir')
 def salir():
-    global usuario1
-    usuario1 = 0
+    session.clear()
     return redirect(url_for("index"))
     
 @app.route('/evento')
 def evento():
-    if usuario1 > 0:
+    if session.get('logged_in') == True:
         return render_template("evento.html")
     else:
         return redirect(url_for("login"))
@@ -144,7 +145,7 @@ def crear_evento():
         descripcion = request.form['descripcion'] 
         hora = request.form['hora'] 
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO evento (id_usuario,titulo,fecha,descripcion,hora) VALUES (%s,%s,%s,%s,%s)",(usuario1,titulo,fecha,descripcion,hora))
+        cur.execute("INSERT INTO evento (id_usuario,titulo,fecha,descripcion,hora) VALUES (%s,%s,%s,%s,%s)",(session['id'],titulo,fecha,descripcion,hora))
         mysql.connection.commit()
         cur.close()
         flash("El evento fue registrado exitosamente", "exito")
@@ -152,11 +153,11 @@ def crear_evento():
 
 @app.route("/busqueda", methods=["POST"])
 def busqueda():
-    if request.method == "POST":
-        if usuario1 > 0:
+    if session.get('logged_in') == True:
+        if request.method == "POST":
             busqueda = "%" + request.form["busqueda"] + "%"
             cur = mysql.connection.cursor()
-            cur.execute("SELECT * FROM evento WHERE descripcion LIKE %s and id_usuario = %s ORDER BY id DESC",(busqueda,usuario1,))
+            cur.execute("SELECT * FROM evento WHERE descripcion LIKE %s and id_usuario = %s ORDER BY id DESC",(busqueda,session['id'],))
             eventos = cur.fetchall()
             cur.close()
             return render_template("principal.html", eventos=eventos)
@@ -186,14 +187,14 @@ def busqueda_avanzada():
                         return redirect(url_for("principal"))
                     else:
                         cur = mysql.connection.cursor()
-                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s and hora LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha,"%" + ba_hora + "%",))
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s and hora LIKE %s ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%",ba_fecha,"%" + ba_hora + "%",))
                         eventos = cur.fetchall()
                         cur.close()
                         return render_template("principal.html", eventos=eventos)
                 elif ba_hora2 != "":
                     if ba_hora3 != "":
                         cur = mysql.connection.cursor()
-                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha,ba_hora2,ba_hora3,))
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%",ba_fecha,ba_hora2,ba_hora3,))
                         eventos = cur.fetchall()
                         cur.close()
                         return render_template("principal.html", eventos=eventos) 
@@ -205,7 +206,7 @@ def busqueda_avanzada():
                     return redirect(url_for("principal"))
                 else:
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha,))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha LIKE %s ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%",ba_fecha,))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos)
@@ -216,7 +217,7 @@ def busqueda_avanzada():
                 elif ba_fecha2 != "":
                     if ba_fecha3 != "":
                         cur = mysql.connection.cursor()
-                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and hora LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%","%" + ba_hora + "%",ba_fecha2,ba_fecha3,))
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and hora LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%","%" + ba_hora + "%",ba_fecha2,ba_fecha3,))
                         eventos = cur.fetchall()
                         cur.close()
                         return render_template("principal.html", eventos=eventos) 
@@ -228,14 +229,14 @@ def busqueda_avanzada():
                     return redirect(url_for("principal"))
                 else:
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and hora LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%","%" + ba_hora + "%",))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and hora LIKE %s ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%","%" + ba_hora + "%",))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos)
             elif ba_fecha2 != "":
                 if ba_fecha3 != "":
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_fecha2,ba_fecha3,))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%",ba_fecha2,ba_fecha3,))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos) 
@@ -248,7 +249,7 @@ def busqueda_avanzada():
             elif ba_hora2 != "":
                 if ba_hora3 != "":
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",ba_hora2,ba_hora3,))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%",ba_hora2,ba_hora3,))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos) 
@@ -260,7 +261,7 @@ def busqueda_avanzada():
                 return redirect(url_for("principal"))
             else:
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_titulo + "%",))
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and titulo LIKE %s ORDER BY id ASC",(session['id'],"%" + ba_titulo + "%",))
                 eventos = cur.fetchall()
                 cur.close()
                 return render_template("principal.html", eventos=eventos)
@@ -274,14 +275,14 @@ def busqueda_avanzada():
                     return redirect(url_for("principal"))
                 else:
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s and hora LIKE %s ORDER BY id ASC",(usuario1,ba_fecha,"%" + ba_hora + "%",))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s and hora LIKE %s ORDER BY id ASC",(session['id'],ba_fecha,"%" + ba_hora + "%",))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos) 
             elif ba_hora2 != "":
                 if ba_hora3 != "":
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,ba_fecha,ba_hora2,ba_hora3,))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(session['id'],ba_fecha,ba_hora2,ba_hora3,))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos)  
@@ -293,7 +294,7 @@ def busqueda_avanzada():
                 return redirect(url_for("principal"))
             else:
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s ORDER BY id ASC",(usuario1,ba_fecha,))
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha LIKE %s ORDER BY id ASC",(session['id'],ba_fecha,))
                 eventos = cur.fetchall()
                 cur.close()
                 return render_template("principal.html", eventos=eventos)
@@ -304,7 +305,7 @@ def busqueda_avanzada():
             elif ba_fecha2 != "":
                 if ba_fecha3 != "":
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and hora LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,"%" + ba_hora + "%",ba_fecha2,ba_fecha3,))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and hora LIKE %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(session['id'],"%" + ba_hora + "%",ba_fecha2,ba_fecha3,))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos) 
@@ -316,7 +317,7 @@ def busqueda_avanzada():
                 return redirect(url_for("principal"))
             else:
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and hora LIKE %s ORDER BY id ASC",(usuario1,"%" + ba_hora + "%",))
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and hora LIKE %s ORDER BY id ASC",(session['id'],"%" + ba_hora + "%",))
                 eventos = cur.fetchall()
                 cur.close()
                 return render_template("principal.html", eventos=eventos)
@@ -325,7 +326,7 @@ def busqueda_avanzada():
                 if ba_hora2 != "":
                     if ba_hora3 != "":
                         cur = mysql.connection.cursor()
-                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,ba_fecha2,ba_fecha3,ba_hora2,ba_hora3,))
+                        cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) and (hora >= %s and hora <= %s) ORDER BY id ASC",(session['id'],ba_fecha2,ba_fecha3,ba_hora2,ba_hora3,))
                         eventos = cur.fetchall()
                         cur.close()
                         return render_template("principal.html", eventos=eventos) 
@@ -337,7 +338,7 @@ def busqueda_avanzada():
                     return redirect(url_for("principal"))
                 else:
                     cur = mysql.connection.cursor()
-                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(usuario1,ba_fecha2,ba_fecha3,))
+                    cur.execute("SELECT * FROM evento WHERE id_usuario = %s and fecha BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE) ORDER BY id ASC",(session['id'],ba_fecha2,ba_fecha3,))
                     eventos = cur.fetchall()
                     cur.close()
                     return render_template("principal.html", eventos=eventos) 
@@ -350,7 +351,7 @@ def busqueda_avanzada():
         elif ba_hora2 != "":
             if ba_hora3 != "":
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(usuario1,ba_hora2,ba_hora3,))
+                cur.execute("SELECT * FROM evento WHERE id_usuario = %s and (hora >= %s and hora <= %s) ORDER BY id ASC",(session['id'],ba_hora2,ba_hora3,))
                 eventos = cur.fetchall()
                 cur.close()
                 return render_template("principal.html", eventos=eventos) 
@@ -365,4 +366,4 @@ def busqueda_avanzada():
             return redirect(url_for("principal"))
 
 if __name__ == '__main__': 
-    app.run(debug=True)
+    app.run(debug=True, port="5000")

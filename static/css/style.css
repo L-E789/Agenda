@@ -73,7 +73,6 @@ background-size: 100% 100%;
 
 .terminos{
     text-align: center;
-
 }
 
 .terminos1{
@@ -82,10 +81,10 @@ background-size: 100% 100%;
     top: 40px;
     left: 450px;
     padding: 50px 60px;
-    position: absolute;
+    margin-top: 120px;
+    margin-left: 400px;
     border-radius: 30px;
     background-color: rgb(202, 255, 242);
-    opacity: 90%;
     text-align: justify;
 }
 
