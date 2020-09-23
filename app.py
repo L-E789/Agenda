@@ -1,6 +1,8 @@
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
+import random, smtplib
+from email.message import EmailMessage
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisasecret'
@@ -82,6 +84,77 @@ def login_datos():
             return redirect(url_for("login"))
     else:
         return redirect(url_for("login"))
+
+@app.route('/recuperar', methods=['POST'])
+def recuperar():
+    if request.method == 'POST':
+        correo = request.form['email']
+        session['correo'] = correo
+        cur = mysql.connection.cursor()  
+        try:
+            cur.execute("SELECT * FROM usuario WHERE email = %s", (session['correo'],))    
+            datos = cur.fetchall()
+            cur.close()
+            for i in datos:
+                correo = i[2]
+                ccs = random.randint(000000000,100000001)
+                session['recovery'] = True
+                session['validar'] = ccs
+                msg = EmailMessage()
+                msg.set_content(f"Su codigo es {session['validar']}")
+
+                msg['Subject'] = 'Cambio de contraseña'
+                msg['From'] = "codegroup787@gmail.com"
+                msg['To'] = correo
+
+                server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+                server.login("codegroup787@gmail.com", "codegroup787..")
+                server.send_message(msg)
+                server.quit()
+                return redirect(url_for("recovery"))
+            else:
+                flash("El correo no corresponde a un usuario registrado", "error")
+                return redirect(url_for("login"))
+        except:
+            flash("El correo no corresponde a un usuario registrado", "error")
+            return redirect(url_for("login"))
+    else:
+        return redirect(url_for("login"))
+
+@app.route('/recovery')
+def recovery():
+    if session.get('recovery') == True:
+        return render_template("cambio.html")
+    else:
+        return redirect(url_for("login"))
+
+@app.route('/recovery2', methods=['POST'])
+def recovery2():
+    if request.method == 'POST':
+        codigo = request.form['codigo']
+        if session.get('recovery') == True:
+            if session['validar'] == int(codigo):
+                contrasena = request.form['contrasena']
+                validar = request.form['validar']
+                if contrasena == validar:
+                    cur = mysql.connection.cursor()
+                    cur.execute("UPDATE usuario SET contrasena = %s where email = %s", (generate_password_hash(contrasena, method="sha256"),session['correo'],))
+                    mysql.connection.commit()
+                    cur.close()
+                    session.clear()
+                    flash("La contraseña se cambio con éxito", "exito")
+                    return redirect(url_for("login"))
+                else:
+                    flash("Las contraseñas ingresadas no coinciden", "info")
+                    return redirect(url_for("recovery"))
+            else:
+                flash("El codigo que acaba de ingresar es incorrecto", "error")
+                return redirect(url_for("recovery"))
+        else:
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for("principal"))
+
 
 @app.route('/principal')
 def principal():
@@ -366,4 +439,4 @@ def busqueda_avanzada():
             return redirect(url_for("principal"))
 
 if __name__ == '__main__': 
-    app.run(debug=True, port="5000")
+    app.run(debug=True)

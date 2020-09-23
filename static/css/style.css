@@ -434,6 +434,7 @@ background-size: 100% 100%;
     top: 100px;
     display: none;
 }
+
 #cerrar img{
     width: 20px;
     height: 20px;
@@ -446,7 +447,61 @@ background-size: 100% 100%;
     background-color: red;
 }
 
+.ventana2{
+    background-color: rgb(202, 255, 242);
+    opacity: 200%;
+    width: 26%;
+    height: 15%;
+    position: absolute;
+    top: 150px;
+    left: 10px;
+    padding: 15px;
+    display: none;
+    border-radius: 10px;
+}
+
+#cerrar2 img{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 334px;
+    border-radius: 5px;
+    top: 0px;
+}
+
+#cerrar2 img:hover{
+    background-color: red;
+}
+
+.ventana2 input[type="email"]{
+    border: none;
+    outline: none;
+    height: 30px;
+    width: 280px;
+    border-radius: 15px;
+}
+
+.ventana2 button[type="submit"]{
+    border: none;
+    outline: none;
+    border-radius: 15px;
+}
+
+.ventana2 input[type="image"]{
+    border: none;
+    outline: none;
+    margin-left: 12px;
+
+}
+
+.txt{
+    color: rgb(0, 0, 0);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
 /* Este es todo el css de la barra de busqueda*/
+
+
 
 .busqueda_a button {
     float: right;
